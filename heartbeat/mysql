@@ -1014,7 +1014,17 @@ mysql_notify() {
 		ocf_log info "Ignoring post-promote notification for my own promotion."
 		return $OCF_SUCCESS
 	    fi
-            start_slave $master_host
+            # It's possible that pre-promote hasn't finished when we get here,
+            # so do a number of retries if we fail to start slaving.
+            max_retries=10
+            for (( i=1 ; i <= $max_retries ; i++ )) ; do
+                start_slave $master_host
+                if [ $? -eq 0 ]; then
+                    break
+                fi
+                ocf_log debug "Start slave failed attempt $i (pre-promote not finished?) - retrying..."
+                sleep 1
+            done
 	    if [ $? -ne 0 ]; then
 		ocf_log err "Failed to start slave"
 		return $OCF_ERR_GENERIC
