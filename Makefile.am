@@ -92,7 +92,7 @@ gen-ChangeLog:
 $(SPEC): $(SPEC).in
 	rm -f $@-t $@
 	date="$(shell LC_ALL=C date "+%a %b %d %Y")" && \
-	specver="1" && \
+	specver="9.ew" && \
 	rcver="" && \
 	dirty="" && \
 	alphatag="" && \
